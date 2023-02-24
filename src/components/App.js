@@ -3,35 +3,32 @@ import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import PopupWithForm from './PopupWithForm.js';
-// import { handleEditAvatarClick } from './Main.js';
-// import { handleEditProfileClick } from './Main.js';
-// import { handleAddPlaceClick } from './Main.js';
-
-// const isEditProfilePopupOpen
-// const isAddPlacePopupOpen
-// const isEditAvatarPopupOpen
+import ImagePopup from './ImagePopup.js';
 
 function App() {
-  const [isEditProfilePopupOpen, setProfilePopupOpen] = React.useState(false);
+  const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
   function handleEditProfileClick() {
     setProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
-  const [isAddPlacePopupOpen, setPlacePopupOpen] = React.useState(false);
+  const [isAddPlacePopupOpen, setPlacePopupOpen] = useState(false);
   function handleAddPlaceClick() {
     setPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
-  const [isEditAvatarPopupOpen, setAvatarPopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
   function handleEditAvatarClick() {
     setAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
   function closeAllPopups() {
-    setProfilePopupOpen(false)
-    setPlacePopupOpen(false)
-    setAvatarPopupOpen(false)
+    setProfilePopupOpen(false);
+    setPlacePopupOpen(false);
+    setAvatarPopupOpen(false);
+    setSelectedCard(false);
   }
+
+  const [selectedCard, setSelectedCard] = useState(false);
 
 
   return (
@@ -41,8 +38,12 @@ function App() {
         onEditAvatar={handleEditAvatarClick}
         onAddPlace={handleAddPlaceClick}
         onEditProfile={handleEditProfileClick}
+        onCardClick={setSelectedCard}
       />
       <Footer />
+
+      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+
       <PopupWithForm
         name={'avatar'}
         title={'Обновить аватар'}
@@ -62,6 +63,7 @@ function App() {
           </>
         }
       />
+
       <PopupWithForm
         name={'place'}
         title={'Новое место'}
@@ -95,6 +97,7 @@ function App() {
           </>
         }
       />
+
       <PopupWithForm
         name={'name'}
         title={'Редактировать профиль'}
@@ -122,22 +125,8 @@ function App() {
             />
             <span className='popup__error' id='job-error'></span>
           </>
-
         }
       />
-      {/* <template id='element-template'>
-        <article className='element'>
-          <img className='element__image' src='#' alt='#' />
-          <button className='element__trash-icon' type='button' aria-label='удалить'></button>
-          <div className='element__info'>
-            <h2 className='element__name'></h2>
-            <div className='element__like'>
-              <button className='element__like-btn' type='button' aria-label='лайк'></button>
-              <p className='element__like-counter'>0</p>
-            </div>
-          </div>
-        </article>
-      </template> */}
     </div>
   );
 }

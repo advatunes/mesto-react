@@ -13,9 +13,18 @@
   z-index: 0;
 }
 
-.profile__avatar:hover + .profile__avatar-hover {
+.profile__avatar:hover + .profile__avatar-hover  {
   display: block;
   visibility: visible;
   opacity: 1;
   transition: opacity 0.2s;
 }
+
+
+/* @media screen and (max-width: 640px) {
+  .profile__avatar-hover {
+    left: 230px;
+  }
+}
+
+*/

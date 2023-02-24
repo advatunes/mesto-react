@@ -1,20 +1,7 @@
 import React, { Children, useEffect } from 'react';
 
 function PopupWithForm(props) {
-  // const [isOpen, setOpen] = React.useState(props.isOpen);
-  //isOpen, name, title, children
-  //  useEffect(() => {
-  //    console.log(isOpen,props);
-  //  });
-  // var func1 = () => {
-  // setOpen(!isOpen);
-
-  // };
-
-  // if (!props.isOpen) {
-  //   console.log(`popup-${props.name}`.classList.add('popup_opened'))
-  //   // {`popup-${props.name}`.classList.add('popup_opened')};
-  // }
+  
 
   return (
     <div className={`popup popup-${props.name} ${props.isOpen && 'popup_opened'}`}>

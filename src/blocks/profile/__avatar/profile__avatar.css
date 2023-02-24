@@ -5,13 +5,12 @@
   object-fit: cover;
   cursor: pointer;
   transition: opacity .2s;
-  position: relative;
   text-align: center;
+  position: relative;
 }
 
 .profile__avatar:hover {
   opacity: .2;
   z-index: 2;
 }
-
 
