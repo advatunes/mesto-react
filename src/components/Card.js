@@ -1,12 +1,9 @@
 import React from 'react';
 
 function Card(props) {
-
   function handleClick() {
-   return  props.onCardClick(props.card);
+    return props.onCardClick(props.card);
   }
-
-
 
   return (
     <article className='element'>
