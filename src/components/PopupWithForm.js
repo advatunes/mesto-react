@@ -1,8 +1,9 @@
 import React, { Children, useEffect } from 'react';
 
 function PopupWithForm(props) {
+  if(props.isOpen)
   return (
-    <div className={`popup popup-${props.name} ${props.isOpen && 'popup_opened'}`}>
+    <div className={`popup popup-${props.name} popup_opened`}>
       <div className='popup__container'>
         <form className='popup__form' name={`popup-${props.name}`} noValidate>
           <h2 className='popup__title'>{props.title}</h2>
@@ -20,6 +21,7 @@ function PopupWithForm(props) {
       </div>
     </div>
   );
+  else return null;
 }
 
 export default PopupWithForm;
