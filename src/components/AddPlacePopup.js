@@ -3,14 +3,14 @@ import PopupWithForm from './PopupWithForm';
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
   const [name, setName] = React.useState('');
-  const [link, linkDescription] = React.useState('');
+  const [link, setLink] = React.useState('');
 
   function handleChangeName(e) {
     setName(e.target.value);
   }
 
   function handleChangeLink(e) {
-    linkDescription(e.target.value);
+    setLink(e.target.value);
   }
 
   function handleSubmit(e) {
@@ -39,6 +39,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           minLength='2'
           maxLength='30'
           onChange={handleChangeName}
+          value={name}
           required
         />
         <span className='popup__error' id='place-error'></span>
@@ -50,6 +51,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           placeholder='Ссылка на картинку'
           type='url'
           onChange={handleChangeLink}
+          value={link}
           required
         />
         <span className='popup__error' id='link-error'></span>

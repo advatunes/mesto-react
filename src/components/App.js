@@ -13,13 +13,34 @@ function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
 
-  const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
 
-  const [isAddPlacePopupOpen, setPlacePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsPlacePopupOpen] = useState(false);
 
-  const [isEditAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
+
+  // Обработчик Escape
+
+  const isOpen =
+    isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard;
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if (evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      };
+    }
+  }, [isOpen]);
+
+  //
 
   useEffect(() => {
     api
@@ -42,55 +63,82 @@ function App() {
   }, []);
 
   function handleEditProfileClick() {
-    setProfilePopupOpen(!isEditProfilePopupOpen);
+    setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
   function handleAddPlaceClick() {
-    setPlacePopupOpen(!isAddPlacePopupOpen);
+    setIsPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   function handleEditAvatarClick() {
-    setAvatarPopupOpen(!isEditAvatarPopupOpen);
+    setIsAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
   function closeAllPopups() {
-    setProfilePopupOpen(false);
-    setPlacePopupOpen(false);
-    setAvatarPopupOpen(false);
+    setIsEditProfilePopupOpen(false);
+    setIsPlacePopupOpen(false);
+    setIsAvatarPopupOpen(false);
     setSelectedCard(null);
   }
 
   function handleUpdateUser(data) {
-    api.editUserData(data).then((data) => {
-      setCurrentUser(data);
-      closeAllPopups();
-    });
+    api
+      .editUserData(data)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleUpdateAvatar(data) {
-    api.editAvatar(data).then((data) => {
-      setCurrentUser(data);
-      closeAllPopups();
-    });
+    api
+      .editAvatar(data)
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleAddPlaceSubmit(data) {
-    api.addNewCard(data).then((newCard) => {
-      setCards([newCard, ...cards]);
-      closeAllPopups();
-    });
+    api
+      .addNewCard(data)
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function handleDeleteCard(card) {
-    api.deleteCard(card._id).then(setCards(cards.filter((c) => c._id !== card._id)));
+    api
+      .deleteCard(card._id)
+      .then(() => {
+        setCards(cards.filter((c) => c._id !== card._id));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (

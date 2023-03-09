@@ -1,7 +1,7 @@
 import React from 'react';
 
 function getYear() {
-  let today = new Date();
+  const today = new Date();
   return today.getFullYear();
 }
 
