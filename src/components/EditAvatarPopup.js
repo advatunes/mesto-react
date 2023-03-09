@@ -7,12 +7,10 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   const [avatar, setAvatar] = React.useState('');
 
   React.useEffect(() => {
-    setAvatar(currentUser.avatar);;
+    setAvatar(currentUser.avatar);
   }, [currentUser]);
 
-
   const avatarRef = React.useRef(0);
-//   console.log(avatar);
 
   function handleChangeLink(e) {
     setAvatar(e.target.value);

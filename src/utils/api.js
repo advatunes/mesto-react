@@ -29,7 +29,6 @@ class Api {
   }
 
   editUserData(data) {
-   
     return this._request(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
@@ -38,7 +37,6 @@ class Api {
         about: data.about,
       }),
     });
-   
   }
 
   editAvatar(avatar) {
@@ -66,13 +64,6 @@ class Api {
       headers: this._headers,
     });
   }
-
-  // deleteLike(cardId) {
-  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-  //     method: 'DELETE',
-  //     headers: this._headers,
-  //   });
-  // }
 
   deleteCard(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
