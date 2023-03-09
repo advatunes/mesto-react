@@ -6,16 +6,18 @@ import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState(null);
   const [cards, setCards] = useState([]);
 
-  const [popups, setPopups] = useState({
-    isEditProfilePopupOpen: false,
-    isAddPlacePopupOpen: false,
-    isEditAvatarPopupOpen: false,
-  });
+  const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
+
+  const [isAddPlacePopupOpen, setPlacePopupOpen] = useState(false);
+
+  const [isEditAvatarPopupOpen, setAvatarPopupOpen] = useState(false);
 
   const [currentUser, setCurrentUser] = useState('');
 
@@ -40,20 +42,36 @@ function App() {
   }, []);
 
   function handleEditProfileClick() {
-    setPopups({ ...popups, isEditProfilePopupOpen: !popups.isEditProfilePopupOpen });
+    setProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
   function handleAddPlaceClick() {
-    setPopups({ ...popups, isAddPlacePopupOpen: !popups.isAddPlacePopupOpen });
+    setPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   function handleEditAvatarClick() {
-    setPopups({ ...popups, isEditAvatarPopupOpen: !popups.isEditAvatarPopupOpen });
+    setAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
   function closeAllPopups() {
-    setPopups(false);
+    setProfilePopupOpen(false);
+    setPlacePopupOpen(false);
+    setAvatarPopupOpen(false);
     setSelectedCard(null);
+  }
+
+  function handleUpdateUser(data) {
+    api.editUserData(data).then((data) => {
+      setCurrentUser(data);
+      closeAllPopups();
+    });
+  }
+
+  function handleUpdateAvatar(data) {
+    api.editAvatar(data).then((data) => {
+      setCurrentUser(data);
+      closeAllPopups();
+    });
   }
 
   // function handleCardLike(card) {
@@ -70,14 +88,14 @@ function App() {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
 
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-
       setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
     });
   }
 
   function handleDeleteCard(card) {
     // const isOwn = card.owner._id === currentUser._id;
-    api.deleteCard(card._id).then(setCards(cards.filter(c => c._id !== card._id )))  }
+    api.deleteCard(card._id).then(setCards(cards.filter((c) => c._id !== card._id)));
+  }
 
   return (
     <div className='root'>
@@ -96,27 +114,16 @@ function App() {
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-        <PopupWithForm
-          name={'avatar'}
-          title={'Обновить аватар'}
-          isOpen={popups.isEditAvatarPopupOpen}
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          buttonTitle={'Сохранить'}
-        >
-          <input
-            className='popup__input popup-avatar__input-link'
-            name='avatar'
-            placeholder='Ссылка на аватар'
-            type='url'
-            required
-          />
-          <span className='popup__error' id='avatar-error'></span>
-        </PopupWithForm>
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
         <PopupWithForm
           name={'place'}
           title={'Новое место'}
-          isOpen={popups.isAddPlacePopupOpen}
+          isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           buttonTitle={'Создать'}
         >
@@ -144,32 +151,11 @@ function App() {
           </label>
         </PopupWithForm>
 
-        <PopupWithForm
-          name={'name'}
-          title={'Редактировать профиль'}
-          isOpen={popups.isEditProfilePopupOpen}
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          buttonTitle={'Сохранить'}
-        >
-          <input
-            className='popup__input popup-name__input-name'
-            name='name'
-            type='text'
-            minLength='2'
-            maxLength='40'
-            required
-          />
-          <span className='popup__error' id='name-error'></span>
-          <input
-            className='popup__input popup-name__input-job'
-            name='job'
-            type='text'
-            minLength='2'
-            maxLength='200'
-            required
-          />
-          <span className='popup__error' id='job-error'></span>
-        </PopupWithForm>
+          onUpdateUser={handleUpdateUser}
+        />
       </CurrentUserContext.Provider>
     </div>
   );
