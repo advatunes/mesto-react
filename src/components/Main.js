@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card.js';
 import { api } from '../utils/api.js';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main({ onEditAvatar, onAddPlace, onEditProfile, onCardClick }) {
-  const [userName, setUserName] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
+  // const [userName, setUserName] = useState('');
+  // const [userDescription, setUserDescription] = useState('');
+  // const [userAvatar, setUserAvatar] = useState('');
+
+  const currentUser = React.useContext(CurrentUserContext);
 
   const [cards, setCards] = useState([]);
 
@@ -20,18 +23,18 @@ function Main({ onEditAvatar, onAddPlace, onEditProfile, onCardClick }) {
       });
   }, []);
 
-  useEffect(() => {
-    api
-      .getUserData()
-      .then((data) => {
-        setUserName(data.name);
-        setUserDescription(data.about);
-        setUserAvatar(data.avatar);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  // useEffect(() => {
+  //   api
+  //     .getUserData()
+  //     .then((data) => {
+  //       setUserName(data.name);
+  //       setUserDescription(data.about);
+  //       setUserAvatar(data.avatar);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   return (
     <main className='content'>
@@ -41,14 +44,14 @@ function Main({ onEditAvatar, onAddPlace, onEditProfile, onCardClick }) {
             className='profile__avatar'
             alt='аватар'
             onClick={onEditAvatar}
-            src={`${userAvatar}`}
+            src={`${currentUser.avatar}`}
           />
           <div className='profile__avatar-hover'></div>
         </div>
 
         <div className='profile__info'>
           <div className='profile__name-wrap'>
-            <h1 className='profile__name'>{userName}</h1>
+            <h1 className='profile__name'>{currentUser.name}</h1>
             <button
               className='profile__edit-button'
               type='button'
@@ -56,7 +59,7 @@ function Main({ onEditAvatar, onAddPlace, onEditProfile, onCardClick }) {
               onClick={onEditProfile}
             ></button>
           </div>
-          <p className='profile__job'>{userDescription}</p>
+          <p className='profile__job'>{currentUser.about}</p>
         </div>
         <button
           className='profile__add-button'

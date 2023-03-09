@@ -1,10 +1,9 @@
 import React from 'react';
 
 function getYear() {
-    let today = new Date();
-    return today.getFullYear();
+  let today = new Date();
+  return today.getFullYear();
 }
-
 
 function Footer() {
   return (
@@ -13,7 +12,5 @@ function Footer() {
     </footer>
   );
 }
-
-
 
 export default Footer;
