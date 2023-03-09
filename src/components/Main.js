@@ -36,8 +36,6 @@ function Main({ onEditAvatar, onAddPlace, onEditProfile, onCardClick }) {
   //     });
   // }, []);
 
-  // const ass = console.log(currentUser);
-
   return (
     <main className='content'>
       <section className='profile content__profile'>
