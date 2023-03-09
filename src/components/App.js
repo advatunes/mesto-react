@@ -5,10 +5,11 @@ import Footer from './Footer';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/api';
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cards, setCards] = useState([]);
 
   const [popups, setPopups] = useState({
     isEditProfilePopupOpen: false,
@@ -25,7 +26,18 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  },[]);
+  }, []);
+
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cards) => {
+        setCards(cards);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   function handleEditProfileClick() {
     setPopups({ ...popups, isEditProfilePopupOpen: !popups.isEditProfilePopupOpen });
@@ -44,6 +56,29 @@ function App() {
     setSelectedCard(null);
   }
 
+  // function handleCardLike(card) {
+  //   const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+  //   api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+  //     setCards((state) => {
+  //       state.map((c) => (c._id === card._id ? newCard : c))
+  //     });
+  //   });
+  // }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleDeleteCard(card) {
+    // const isOwn = card.owner._id === currentUser._id;
+    api.deleteCard(card._id).then(setCards(cards.filter(c => c._id !== card._id )))  }
+
   return (
     <div className='root'>
       <CurrentUserContext.Provider value={currentUser}>
@@ -53,6 +88,9 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onEditProfile={handleEditProfileClick}
           onCardClick={setSelectedCard}
+          onCardLike={handleCardLike}
+          onCardDelete={handleDeleteCard}
+          cards={cards}
         />
         <Footer />
 

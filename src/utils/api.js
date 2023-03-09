@@ -58,19 +58,19 @@ class Api {
     });
   }
 
-  addLike(cardId) {
+  changeLikeCardStatus(cardId, isLiked) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'PUT',
+      method: isLiked ? 'PUT' : 'DELETE',
       headers: this._headers,
     });
   }
 
-  deleteLike(cardId) {
-    return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: 'DELETE',
-      headers: this._headers,
-    });
-  }
+  // deleteLike(cardId) {
+  //   return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
+  //     method: 'DELETE',
+  //     headers: this._headers,
+  //   });
+  // }
 
   deleteCard(cardId) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
