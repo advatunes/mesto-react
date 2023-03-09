@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import { api } from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState(null);
+  const [cards, setCards] = useState([]);
 
   const [isEditProfilePopupOpen, setProfilePopupOpen] = useState(false);
 
@@ -23,6 +25,17 @@ function App() {
     api
       .getUserData()
       .then((data) => setCurrentUser(data))
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cards) => {
+        setCards(cards);
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -54,8 +67,34 @@ function App() {
     });
   }
 
+  function handleUpdateAvatar(data) {
+    api.editAvatar(data).then((data) => {
+      setCurrentUser(data);
+      closeAllPopups();
+    });
+  }
+
+  function handleAddPlaceSubmit(data) {
+    api.addNewCard(data).then((newCard) => {
+      setCards([newCard, ...cards]);
+      closeAllPopups();
+    });
+  }
+
+  function handleCardLike(card) {
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
+    });
+  }
+
+  function handleDeleteCard(card) {
+    api.deleteCard(card._id).then(setCards(cards.filter((c) => c._id !== card._id)));
+  }
+
   return (
-    <div className="root">
+    <div className='root'>
       <CurrentUserContext.Provider value={currentUser}>
         <Header />
         <Main
@@ -63,56 +102,26 @@ function App() {
           onAddPlace={handleAddPlaceClick}
           onEditProfile={handleEditProfileClick}
           onCardClick={setSelectedCard}
+          onCardLike={handleCardLike}
+          onCardDelete={handleDeleteCard}
+          cards={cards}
         />
         <Footer />
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 
-        <PopupWithForm
-          name={'avatar'}
-          title={'Обновить аватар'}
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          buttonTitle={'Сохранить'}>
-          <input
-            className="popup__input popup-avatar__input-link"
-            name="avatar"
-            placeholder="Ссылка на аватар"
-            type="url"
-            required
-          />
-          <span className="popup__error" id="avatar-error"></span>
-        </PopupWithForm>
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
-        <PopupWithForm
-          name={'place'}
-          title={'Новое место'}
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          buttonTitle={'Создать'}>
-          <label className="popup__form-field">
-            <input
-              className="popup__input popup-place__input-place"
-              name="place"
-              placeholder="Название"
-              type="text"
-              minLength="2"
-              maxLength="30"
-              required
-            />
-            <span className="popup__error" id="place-error"></span>
-          </label>
-          <label className="popup__form-field">
-            <input
-              className="popup__input popup-place__input-link"
-              name="link"
-              placeholder="Ссылка на картинку"
-              type="url"
-              required
-            />
-            <span className="popup__error" id="link-error"></span>
-          </label>
-        </PopupWithForm>
+          onAddPlace={handleAddPlaceSubmit}
+        />
+
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}

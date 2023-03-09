@@ -12,8 +12,6 @@ function EditProfileComponent({ isOpen, onClose, onUpdateUser }) {
     setDescription(currentUser.about);
   }, [currentUser]);
 
-  //   console.log(currentUser);
-
   function handleChangeName(e) {
     setName(e.target.value);
   }
@@ -25,7 +23,7 @@ function EditProfileComponent({ isOpen, onClose, onUpdateUser }) {
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser({
-      name,
+      name: name,
       about: description,
     });
   }
@@ -37,29 +35,30 @@ function EditProfileComponent({ isOpen, onClose, onUpdateUser }) {
       isOpen={isOpen}
       onClose={onClose}
       buttonTitle={'Сохранить'}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <input
-        className="popup__input popup-name__input-name"
-        name="name"
+        className='popup__input popup-name__input-name'
+        name='name'
         value={name}
         onChange={handleChangeName}
-        type="text"
-        minLength="2"
-        maxLength="40"
+        type='text'
+        minLength='2'
+        maxLength='40'
         required
       />
-      <span className="popup__error" id="name-error"></span>
+      <span className='popup__error' id='name-error'></span>
       <input
-        className="popup__input popup-name__input-job"
-        name="job"
+        className='popup__input popup-name__input-job'
+        name='job'
         value={description}
         onChange={handleChangeDescription}
-        type="text"
-        minLength="2"
-        maxLength="200"
+        type='text'
+        minLength='2'
+        maxLength='200'
         required
       />
-      <span className="popup__error" id="job-error"></span>
+      <span className='popup__error' id='job-error'></span>
     </PopupWithForm>
   );
 }
