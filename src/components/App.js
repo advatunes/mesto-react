@@ -21,6 +21,8 @@ function App() {
 
   const [currentUser, setCurrentUser] = useState({});
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   // Обработчик Escape
 
   const isOpen =
@@ -105,7 +107,9 @@ function App() {
       });
   }
 
+
   function handleAddPlaceSubmit(data) {
+    setIsLoading(true);
     api
       .addNewCard(data)
       .then((newCard) => {
@@ -114,6 +118,9 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -129,6 +136,17 @@ function App() {
         console.log(err);
       });
   }
+
+//   api
+// .changeLikeCardStatus(card._id, !isLiked)
+// .then((newCard) => {
+// const index = cards.findIndex((c) => c._id === card._id);
+// setCards((state) => Object.assign([...state], {[index]: newCard}));
+// })
+// .catch((err) => {
+// console.log(err);
+// });
+// }
 
   function handleDeleteCard(card) {
     api
@@ -162,18 +180,21 @@ function App() {
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoading={isLoading}
         />
 
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlaceSubmit}
+          isLoading={isLoading}
         />
 
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isLoading={isLoading}
         />
       </CurrentUserContext.Provider>
     </div>

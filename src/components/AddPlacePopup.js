@@ -1,24 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PopupWithForm from './PopupWithForm';
+import useValidation from '../utils/useValidation';
 
-function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
-  const [name, setName] = React.useState('');
-  const [link, setLink] = React.useState('');
+function AddPlacePopup({ isOpen, onClose, onAddPlace, isLoading }) {
+  const { values, setValues, error, onChange, resetValidation, formValid } = useValidation();
 
-  function handleChangeName(e) {
-    setName(e.target.value);
-  }
-
-  function handleChangeLink(e) {
-    setLink(e.target.value);
-  }
+  useEffect(() => {
+    if (isOpen) {
+      setValues({});
+      resetValidation();
+    }
+  }, [isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
     onAddPlace({
-      name: name,
-      link: link,
+      name: values.name,
+      link: values.link,
     });
+    resetValidation();
   }
 
   return (
@@ -27,22 +27,25 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
       title={'Новое место'}
       isOpen={isOpen}
       onClose={onClose}
-      buttonTitle={'Создать'}
+      buttonTitle={isLoading ? 'Сохранение...' : 'Сохранить'}
       onSubmit={handleSubmit}
+      formValid={formValid}
     >
       <label className='popup__form-field'>
         <input
           className='popup__input popup-place__input-place'
-          name='place'
+          name='name'
           placeholder='Название'
           type='text'
           minLength='2'
           maxLength='30'
-          onChange={handleChangeName}
-          value={name}
+          onChange={onChange}
+          value={values.name || ''}
           required
         />
-        <span className='popup__error' id='place-error'></span>
+        <span className='popup__error  popup__error_visible' id='link-error'>
+          {error.name || ''}
+        </span>
       </label>
       <label className='popup__form-field'>
         <input
@@ -50,11 +53,13 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace }) {
           name='link'
           placeholder='Ссылка на картинку'
           type='url'
-          onChange={handleChangeLink}
-          value={link}
+          onChange={onChange}
+          value={values.link || ''}
           required
         />
-        <span className='popup__error' id='link-error'></span>
+        <span className='popup__error  popup__error_visible' id='link-error'>
+          {error.link || ''}
+        </span>
       </label>
     </PopupWithForm>
   );
